@@ -8,16 +8,16 @@
  ============================================================================
  */
 
-#define BUFFER_STRLEN 150
-#define LISTENER_QUEUE_STRLEN 50
+#define BUFFER_STRLEN                150
+#define LISTENER_QUEUE_STRLEN        50
 #define INCOMING_MSG_STRLEN          70
 #define OUTCOMING_MSG_STRLEN         82
-#define GRAPHICS_CHAT_WIDTH           82
-
-#include <math.h>
+#define GRAPHICS_CHAT_WIDTH          82
+#define DISTANCE                     10
 
 #define pi 3.14159265358979323846
 
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/socket.h>
@@ -28,8 +28,6 @@
 #include <pthread.h>
 #include <stdbool.h>
 #include <string.h>
-
-
 #include <signal.h>
 #include <unistd.h>
 #include <time.h>
@@ -38,11 +36,6 @@
 #include <stdbool.h>
 
 #include "client.h"
-
-
-
-
-
 
 //typedef enum { false = 0, true = 1 }bool;
 
@@ -901,7 +894,7 @@ void checkInfections(){
             		traverse->latitude, traverse->longitude);
             pthread_mutex_lock(&mutexClientInfo);
 
-			if(dist < 10 &&(tmp->infected == true || traverse->infected == true)){ //cicli infezioni
+			if(dist < DISTANCE &&(tmp->infected == true || traverse->infected == true)){ //cicli infezioni
 				if(tmp->infected == true){
 
 					traverse->cycles = traverse->cycles + 1;
@@ -977,7 +970,7 @@ bool requestNear(LpClientInfo clientInfo){
 
 	while(current != NULL){
 
-		if(distance(user->latitude, user->longitude, current->latitude, current->longitude) < 10){
+		if(distance(user->latitude, user->longitude, current->latitude, current->longitude) < DISTANCE){
             //ad ogni ciclo se un utente è vicino invio il suo username
 			sendMsg(clientInfo, current->username);
 			if(current->infected == true){
