@@ -100,9 +100,11 @@ int main(){
     pthread_create(&tidConnectionRequestsManagement,
      NULL, connectionRequestsManagement, NULL);
     printf("In ascolto ... w\n\n\n");
+
+    alarm(20); //20 secondi chiama la funzione checkInfections()
     while(true){
 
-    	alarm(20); //ogni 20 secondi chiama la funzione checkInfections()
+
 
     }
 
@@ -953,6 +955,7 @@ void checkInfections(){
 
 	}
 	pthread_mutex_unlock(&mutexLogs);
+	alarm(20); //ogni 20 secondi chiama la funzione checkInfections()
 
 
 }
