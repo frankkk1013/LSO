@@ -1,0 +1,7 @@
+ > Nuova connessione accettata: [Client: 2.0.231.149] - Wed Jan 12 17:34:24 2022
+ > Login effettuato con successo: [Client: 2.0.231.149 - hello] - Wed Jan 12 17:34:24 2022
+ > Nuova connessione accettata: [Client: 2.0.148.169] - Wed Jan 12 17:37:37 2022
+ > Registrazione del client 2.0.148.169 avvenuta con successo - Wed Jan 12 17:37:37 2022
+ > Login effettuato con successo: [Client: 2.0.148.169 - capa] - Wed Jan 12 17:37:37 2022
+ > Il client 2.0.231.149 si è disconnesso dal Server - Wed Jan 12 17:38:31 2022
+ > Login effettuato con successo: [Client: 2.0.231.175 - hello] - Wed Jan 12 17:43:28 2022
