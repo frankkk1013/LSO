@@ -558,12 +558,41 @@ bool login(LpClientInfo clientInfo) {
   int recordIndex; /* Indice di posizione del buffer record      */
   char character[1]; /* Array per la lettura dei dati dal DB       */
   int bytesReaded; /* Numero di bytes letti dalla read           */
-  char msg[GRAPHICS_CHAT_WIDTH];
 
   bool alreadyLogged;
 
   char logsBuffer[BUFFER_STRLEN];
+  sendMsg(clientInfo, "$Server: Inserisci lo stato");
+    memset(incomingMsg, '\0', INCOMING_MSG_STRLEN);
 
+    do {
+      passed = true;
+      /* Leggo lo stato inserito dal client */
+      if ((bytesReaded = read(clientInfo -> clientSocket, incomingMsg, INCOMING_MSG_STRLEN)) <= 0) {
+        return false;
+      }
+      incomingMsg[bytesReaded] = '\0';
+
+      if (!strcmp(incomingMsg, "exit")) {
+        return true;
+      } else {
+        if (!strcmp(incomingMsg, "positive")) {
+          clientInfo -> infected = true;
+
+        } else {
+          if (!strcmp(incomingMsg, "negative")) {
+            clientInfo -> infected = false;
+
+          }
+
+        }
+
+      }
+      memset(incomingMsg, '\0', INCOMING_MSG_STRLEN);
+
+    } while (passed != true);
+
+    updateGpsInfo(clientInfo);
   memset(incomingMsg, '\0', INCOMING_MSG_STRLEN);
 
   do {
@@ -677,8 +706,7 @@ bool login(LpClientInfo clientInfo) {
               pthread_mutex_unlock( & mutexLogs);
               sendMsg(clientInfo, "$Server: Login effettuato con successo.");
               sleep(1);
-              sendMsg(clientInfo, "$Server: In attesa che si liberi una sessione...");
-              sleep(1);
+
             }
             break;
           } else {
@@ -697,37 +725,7 @@ bool login(LpClientInfo clientInfo) {
     }
 
   } while (clientInfo -> status != CLTINF_LOGGED);
-  sendMsg(clientInfo, "$Server: Inserisci lo stato");
-  memset(incomingMsg, '\0', INCOMING_MSG_STRLEN);
 
-  do {
-    passed = true;
-    /* Leggo lo stato inserito dal client */
-    if ((bytesReaded = read(clientInfo -> clientSocket, incomingMsg, INCOMING_MSG_STRLEN)) <= 0) {
-      return false;
-    }
-    incomingMsg[bytesReaded] = '\0';
-
-    if (!strcmp(incomingMsg, "exit")) {
-      return true;
-    } else {
-      if (!strcmp(incomingMsg, "positive")) {
-        clientInfo -> infected = true;
-
-      } else {
-        if (!strcmp(incomingMsg, "negative")) {
-          clientInfo -> infected = false;
-
-        }
-
-      }
-
-    }
-    memset(incomingMsg, '\0', INCOMING_MSG_STRLEN);
-
-  } while (passed != true);
-
-  updateGpsInfo(clientInfo);
 
   return false;
 
@@ -848,70 +846,81 @@ void checkInfections() {
   LpClientInfo tmp = listClientInfo;
   struct sockaddr_in clientAddress;
   char logsBuffer[BUFFER_STRLEN];
+  time_t current_time = time(NULL);
 
   LpClientInfo traverse;
   LpClientInfo min;
   double dist;
 
-  while (tmp -> nextClientInfo) {
+  pthread_mutex_lock( & mutexClientInfo);
 
-    min = tmp;
-    traverse = tmp -> nextClientInfo;
-    while (traverse) {
-      dist = distance(tmp -> latitude, tmp -> longitude,
-        traverse -> latitude, traverse -> longitude);
-      pthread_mutex_lock( & mutexClientInfo);
+  if(tmp != NULL){
 
-      if (dist < DISTANCE && (tmp -> infected == true || traverse -> infected == true)) { //cicli infezioni
-        if (tmp -> infected == true) {
+	  while (tmp -> nextClientInfo) {
 
-          traverse -> cycles = traverse -> cycles + 1;
+	      min = tmp;
+	      traverse = tmp -> nextClientInfo;
+	      while (traverse) {
+	        dist = distance(tmp -> latitude, tmp -> longitude,
+	          traverse -> latitude, traverse -> longitude);
+	        //pthread_mutex_lock( & mutexClientInfo);
 
-        } else {
+	        if (dist < DISTANCE && (tmp -> infected == true || traverse -> infected == true)) { //cicli infezioni
+	          if (traverse -> infected == false) {
 
-          tmp -> cycles = tmp -> cycles + 1;
+	            traverse -> cycles = traverse -> cycles + 1;
 
-        }
+	          } else {
 
-        if (tmp -> cycles == 10) {
+	            if (tmp -> infected == false) {
 
-          tmp -> infected = true;
-          totalInfections++;
+	          	tmp -> cycles = tmp -> cycles + 1;
+	            }
 
-        }
-        if (traverse -> cycles == 10) {
+	          }
 
-          traverse -> infected = true;
-          totalInfections++;
+	          if (tmp -> cycles == 3 && tmp -> infected == false) {
 
-        }
-      }
-      pthread_mutex_unlock( & mutexClientInfo);
-      if (dist > 10 && (traverse -> cycles < 10 || tmp -> cycles < 10)) {
-        if (tmp -> infected == true && (!strcmp(traverse -> lastContact, tmp -> username)) && traverse -> cycles > 0) {
-          pthread_mutex_lock( & mutexClientInfo);
-          traverse -> cycles--;
-          pthread_mutex_unlock( & mutexClientInfo);
+	            tmp -> infected = true;
+	            totalInfections++;
 
-        } else {
-          if (traverse -> infected == true && (!strcmp(tmp -> lastContact, traverse -> username)) && tmp -> cycles > 0) {
-            pthread_mutex_lock( & mutexClientInfo);
-            tmp -> cycles--;
-            pthread_mutex_unlock( & mutexClientInfo);
+	          }
+	          if (traverse -> cycles == 3 && traverse -> infected == false) {
 
-          }
-        }
+	            traverse -> infected = true;
+	            totalInfections++;
 
-      }
-      traverse = traverse -> nextClientInfo;
+	          }
+	        }
+	        //pthread_mutex_unlock( & mutexClientInfo);
+	        if (dist > 10 && (traverse -> cycles < 3 || tmp -> cycles < 3)) {
+	          if (tmp -> infected == true && (!strcmp(traverse -> lastContact, tmp -> username)) && traverse -> cycles > 0) {
+	           // pthread_mutex_lock( & mutexClientInfo);
+	            traverse -> cycles--;
+	            //pthread_mutex_unlock( & mutexClientInfo);
 
-    }
-    tmp = tmp -> nextClientInfo;
+	          } else {
+	            if (traverse -> infected == true && (!strcmp(tmp -> lastContact, traverse -> username)) && tmp -> cycles > 0) {
+	              //pthread_mutex_lock( & mutexClientInfo);
+	              tmp -> cycles--;
+	              //pthread_mutex_unlock( & mutexClientInfo);
 
+	            }
+	          }
+
+	        }
+	        traverse = traverse -> nextClientInfo;
+
+	      }
+	      tmp = tmp -> nextClientInfo;
+
+	    }
   }
 
+  pthread_mutex_unlock( & mutexClientInfo);
   pthread_mutex_lock( & mutexLogs);
-  sprintf(logsBuffer, " totalInfections %d", totalInfections);
+  sprintf(logsBuffer, " totalInfections %d - %s", totalInfections, ctime( & current_time));
+
   if (write(logs, logsBuffer, strlen(logsBuffer)) == -1) {
 
   }
@@ -923,15 +932,20 @@ void checkInfections() {
 
 bool requestNear(LpClientInfo clientInfo) {
 
-  LpClientInfo user, current = listClientInfo;
-  user = clientInfo;
+  LpClientInfo user;
+  LpClientInfo current;
+
   int positive = 0, negative = 0;
   char str[4];
+
+  current = listClientInfo;
+  user = clientInfo;
 
   //invio un carattere di inizializzazione
   sendMsg(clientInfo, "$");
 
-  while (current != NULL) {
+  pthread_mutex_lock( & mutexClientInfo);
+  while (current) {
 
     if (distance(user -> latitude, user -> longitude, current -> latitude, current -> longitude) < DISTANCE) {
       //ad ogni ciclo se un utente è vicino invio il suo username
@@ -948,13 +962,18 @@ bool requestNear(LpClientInfo clientInfo) {
     current = current -> nextClientInfo;
   }
 
+
   //invio un carattere di fine trasmissione degli username
   sendMsg(clientInfo, "!");
   //invio il numero di positivi e negativi vicini all utente
-  sprintf(str, "%c", positive);
+  sprintf(str, "%d", positive);
   sendMsg(clientInfo, str);
-  sprintf(str, "%c", negative);
-  sendMsg(clientInfo, current -> username);
+  sprintf(str, "%d", negative);
+  sendMsg(clientInfo, str);
+  sendMsg(clientInfo, "x");
+  //sendMsg(clientInfo, current -> username);
+
+  pthread_mutex_unlock( & mutexClientInfo);
 
   return true;
 
@@ -969,6 +988,7 @@ bool updateGpsInfo(LpClientInfo clientInfo) {
   memset(incomingMsg, '\0', INCOMING_MSG_STRLEN);
   passed = true;
 
+  sendMsg(clientInfo, "$Server: Inserisci latitudine");
   /* Leggo la latitudine dal client */
   if ((bytesReaded = read(clientInfo -> clientSocket, incomingMsg, INCOMING_MSG_STRLEN)) <= 0) {
     return false;
@@ -979,7 +999,8 @@ bool updateGpsInfo(LpClientInfo clientInfo) {
   clientInfo -> latitude = atof(incomingMsg);
   pthread_mutex_unlock( & mutexClientInfo);
 
-  memset(incomingMsg, '\0', INCOMING_MSG_STRLEN);
+  //memset(incomingMsg, '\0', INCOMING_MSG_STRLEN);
+  sendMsg(clientInfo, "$Server: Inserisci longitudine");
   /* Leggo la longitudine dal client */
   if ((bytesReaded = read(clientInfo -> clientSocket, incomingMsg, INCOMING_MSG_STRLEN)) <= 0) {
     return false;
