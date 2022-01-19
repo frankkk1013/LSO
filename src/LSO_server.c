@@ -971,22 +971,24 @@ void checkInfections()
 
 						if (dist < DISTANCE && (tmp->infected == true || traverse->infected == true))
 						{
-						 				//cicli infezioni
-							if (traverse->infected == false)
-							{
 
+							//controllo se è avvenuto un contatto con un positivo
+							if (traverse->infected == false && tmp->infected == true )
+							{
+								strcpy(traverse->lastContact, tmp->username);
 								traverse->cycles = traverse->cycles + 1;
 							}
 							else
 							{
 
-								if (tmp->infected == false)
+								if (tmp->infected == false && traverse->infected == true)
 								{
-
+									strcpy(tmp->lastContact, traverse->username);
 									tmp->cycles = tmp->cycles + 1;
 								}
 							}
 
+							//controllo se è avvenuto per il numero massimo di cicli
 							if (tmp->cycles == CYCLE && tmp->infected == false)
 							{
 
@@ -1001,6 +1003,7 @@ void checkInfections()
 							}
 						}
 
+						//controllo se l'utente negativo sia allontana dal positivo prima dei cicli massimi di controllo
 						if (dist > 10 && (traverse->cycles < CYCLE || tmp->cycles < CYCLE))
 						{
 							if (tmp->infected == true && (!strcmp(traverse->lastContact, tmp->username)) && traverse->cycles > 0)
