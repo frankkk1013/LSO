@@ -24,7 +24,6 @@
        strcpy(newClientInfo->username, username);
        newClientInfo->timestamp = time(NULL);
        newClientInfo->status = CLTINF_GUEST;
-       newClientInfo->havePacket = -1;
        newClientInfo->cycles = 0;
        newClientInfo->infected = false;
        newClientInfo->prevClientInfo = NULL;

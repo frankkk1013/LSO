@@ -31,14 +31,12 @@ struct ClientInfo{
     char clientAddressIPv4[INET_ADDRSTRLEN];
     char username[CLTINF_USERNAME_STRLEN];
     time_t timestamp;
-    int packetsDelivered;
     int status;
     double latitude;
     double longitude;
     char lastContact[CLTINF_USERNAME_STRLEN];
     int cycles;
     bool infected;
-    int havePacket;
     pthread_mutex_t mutexSocket;
 
     //lista doppiamente puntata
