@@ -208,10 +208,11 @@ void disconnectionManagement(LpClientInfo clientInfo)
 	char logsBuffer[BUFFER_STRLEN];
 	pthread_t tidHandler;
 
-	pthread_mutex_lock(&mutexLogs);
+
 	sprintf(logsBuffer, " > Il client %s si è disconnesso dal Server - %s", clientInfo->clientAddressIPv4, ctime(&timestamp));
 	printf("\n > Il client %s si è disconnesso dal Server - %s", clientInfo->clientAddressIPv4, ctime(&timestamp));
 
+	pthread_mutex_lock(&mutexLogs);
 	if (write(logs, logsBuffer, strlen(logsBuffer)) == -1)
 	{
 		printf("Errore durante la scrittura nel file di logs.");
