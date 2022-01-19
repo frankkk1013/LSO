@@ -1,7 +1,7 @@
 /*
  ============================================================================
  Name        : LSO_server.c
- Author      : 
+ Author      :
  Version     :
  Copyright   : Your copyright notice
  Description : Hello World in C, Ansi-style
@@ -133,7 +133,7 @@ int createSocket() {
   struct sockaddr_in serverAddress;
   memset( & serverAddress, '0', sizeof(serverAddress));
   serverAddress.sin_family = AF_INET;
-  serverAddress.sin_addr.s_addr = inet_addr("192.168.1.24");
+  serverAddress.sin_addr.s_addr = inet_addr("192.168.1.13");
 
   //inserire porta
   printf("\n » Inserire la porta del server: ");
@@ -213,25 +213,30 @@ int createSocket() {
 void disconnectionManagement(LpClientInfo clientInfo) {
   time_t timestamp = time(NULL);
   char logsBuffer[BUFFER_STRLEN];
+  pthread_t tidHandler;
 
-  pthread_mutex_lock( & mutexLogs);
+  pthread_mutex_lock( &mutexLogs);
   sprintf(logsBuffer, " > Il client %s si è disconnesso dal Server - %s", clientInfo -> clientAddressIPv4, ctime( & timestamp));
+  printf( "> Il client %s si è disconnesso dal Server - %s", clientInfo -> clientAddressIPv4, ctime( & timestamp));
 
   if (write(logs, logsBuffer, strlen(logsBuffer)) == -1) {
     printf("errore nella scirttura dei log");
 
   }
-  pthread_mutex_unlock( & mutexLogs);
+  pthread_mutex_unlock( &mutexLogs);
 
-  pthread_mutex_unlock( & mutexCursor);
+  pthread_mutex_lock( &mutexCursor);
   connectedClients -= 1;
-  pthread_mutex_lock( & mutexCursor);
-  pthread_mutex_lock( & mutexClientInfo);
+  pthread_mutex_unlock( &mutexCursor);
+  pthread_mutex_lock( &mutexClientInfo);
   /* Chiudo la socket di comunicazione */
+  tidHandler = clientInfo->tidHandler;
   close(clientInfo -> clientSocket);
   /* Elimino dalla lista dei client , il client disconnesso */
   deleteClientInfo( & listClientInfo, & clientInfo);
   pthread_mutex_unlock( & mutexClientInfo);
+  /*elimino il thread*/
+  pthread_exit(tidHandler);
 
 }
 
@@ -246,7 +251,7 @@ void * listenerClient(void * arg) {
   bool exited = false;
 
   /* Invio il messaggio di benvenuto */
-  sendMsg(clientInfo, "$Server: Benvenuto/a! Inserisci i comandi.");
+  sendMsg(clientInfo, "$Server: Benvenuto/a! Inserisci i comandi.\n");
   memset(incomingMsg, '\0', INCOMING_MSG_STRLEN);
 
   while (exited != true && (bytesReaded = read(clientInfo -> clientSocket, incomingMsg, INCOMING_MSG_STRLEN)) > 0) {
@@ -256,7 +261,7 @@ void * listenerClient(void * arg) {
     case CLTINF_GUEST:
 
       if (strncmp(incomingMsg, "signin", 6) == 0) {
-
+    	sendMsg(clientInfo, "$Server: sei entrato in registrazione. \n");
         exited = signIn(clientInfo);
         if (exited) {
           exited = false;
@@ -264,6 +269,7 @@ void * listenerClient(void * arg) {
         }
 
       } else if (strncmp(incomingMsg, "login", 5) == 0) {
+    	  sendMsg(clientInfo, "$Server: sei entrato in login. \n");
         exited = login(clientInfo);
         if (exited) {
           exited = false;
@@ -304,7 +310,7 @@ void * listenerClient(void * arg) {
     memset(incomingMsg, '\0', INCOMING_MSG_STRLEN);
   }
   if (exited) {
-    sendMsg(clientInfo, "$Server: Torna presto! Disconnessione in corso...");
+    sendMsg(clientInfo, "$Server: Torna presto! Disconnessione in corso... \n");
   }
   disconnectionManagement(clientInfo);
 }
@@ -342,8 +348,17 @@ void * connectionRequestsManagement(void * arg) {
       /* Creao un thread che gestirà l'accesso del client al Server */
       pthread_create( & tidListenerClient, NULL, listenerClient, clientInfo);
       clientInfo -> tidHandler = tidListenerClient;
+
+
       printf("Nuova connessione accettata: [Client: %s] - %s", clientAddressIPv4, ctime( & (clientInfo -> timestamp)));
+      pthread_mutex_lock(&mutexCursor);
       totalConnections += 1;
+      printf(" \u25cf Total CN: %7.2d", totalConnections);
+      connectedClients += 1;
+      printf(" \u25cf Connected: %6.2d", connectedClients);
+      pthread_mutex_unlock( & mutexCursor);
+
+      /*totalConnections += 1;
       pthread_mutex_lock( & mutexCursor);
 
       printf(" \u25cf Total CN: %7.2d", totalConnections);
@@ -353,7 +368,7 @@ void * connectionRequestsManagement(void * arg) {
 
       printf(" \u25cf Connected: %6.2d", connectedClients);
       pthread_mutex_unlock( & mutexCursor);
-      //msg[strlen(msg)-1] = '\0';
+      */ //msg[strlen(msg)-1] = '\0';
 
       //scrittura file di log
 
@@ -387,7 +402,7 @@ bool signIn(LpClientInfo clientInfo) {
   char logsBuffer[BUFFER_STRLEN];
 
   memset(incomingMsg, '\0', INCOMING_MSG_STRLEN);
-  sendMsg(clientInfo, "$Server: Inserisci l'username - massimo 10 caratteri.");
+  //sendMsg(clientInfo, "$Server: Inserisci l'username - massimo 10 caratteri.");
 
   do {
     passed = true;
@@ -405,13 +420,13 @@ bool signIn(LpClientInfo clientInfo) {
     } else {
 
       if (strlen(incomingMsg) > CLTINF_USERNAME_STRLEN) {
-        sendMsg(clientInfo, "$Server: Attenzione, username troppo lungo - [massimo 10 caratteri], riprovare.");
+        sendMsg(clientInfo, "se1\n");//username troppo lungo - [massimo 10 caratteri]
         passed = false;
       } else {
 
         for (int i = 0; i < strlen(incomingMsg); i++) {
           if (incomingMsg[i] == ' ') {
-            sendMsg(clientInfo, "$Server: Attenzione, gli spazi non sono consentiti, riprovare.");
+            sendMsg(clientInfo, "se2\n");//gli spazi non sono consentiti
             passed = false;
             break;
           }
@@ -423,7 +438,7 @@ bool signIn(LpClientInfo clientInfo) {
           lseek(database, 0, SEEK_SET);
           memset(record, '\0', GRAPHICS_CHAT_WIDTH);
           recordIndex = 0;
-          sendMsg(clientInfo, "1");
+          //sendMsg(clientInfo, "1");
 
           /* Ciclo sul file database per verificare che lo username non esista già */
           /* La lettura avviene un carattere alla volta fintanto non viene trovato un newline oppure \0 */
@@ -441,7 +456,7 @@ bool signIn(LpClientInfo clientInfo) {
                 usernameDB = strtok(record, " ");
                 /* Controllo se l'username esista gia nel database, se sì, stampo un errore e riclico il do */
                 if (!strcmp(usernameDB, incomingMsg)) {
-                  sendMsg(clientInfo, "$Server: Attenzione, username non disponibile, riprovare.");
+                  sendMsg(clientInfo, "se3\n");//username non disponibile
                   passed = false;
                   break;
                 } else {
@@ -453,7 +468,7 @@ bool signIn(LpClientInfo clientInfo) {
               }
             }
           } while (bytesReaded != 0);
-          sendMsg(clientInfo, "sonofuori");
+          //sendMsg(clientInfo, "sonofuori");
 
           /* Verifico l'eventuale presenza di errori */
           if (bytesReaded == -1) {
@@ -474,9 +489,9 @@ bool signIn(LpClientInfo clientInfo) {
       }
       memset(incomingMsg, '\0', INCOMING_MSG_STRLEN);
     }
-  } while (passed != true);
+  }while (passed != true);
 
-  sendMsg(clientInfo, "$Server: Inserisci la password - massimo 10 caratteri.");
+  sendMsg(clientInfo, "$Server: In attesa della password \n");
   memset(incomingMsg, '\0', INCOMING_MSG_STRLEN);
 
   do {
@@ -487,19 +502,20 @@ bool signIn(LpClientInfo clientInfo) {
     }
     incomingMsg[bytesReaded] = '\0';
 
+
     /* Verifico se l'utente ha inserito il comando di uscita */
     if (!strcmp(incomingMsg, "exit")) {
       return true;
     } else {
       /* Controllo se la password supera la lunghezza di 10 caratteri stabiliti  */
       if (strlen(incomingMsg) > CLTINF_PASSWORD_STRLEN) {
-        sendMsg(clientInfo, "$Server: Attenzione, password troppo lunga - [massimo 10 caratteri], riprovare.");
+        sendMsg(clientInfo, "se4\n"); //pass troppo lunga
         passed = false;
       } else {
         /* Controllo che nella password non siano presenti caratteri di spazio */
         for (int i = 0; i < strlen(incomingMsg); i++) {
           if (incomingMsg[i] == ' ') {
-            sendMsg(clientInfo, "$Server: Attenzione, gli spazi non sono consentiti, riprovare.");
+            sendMsg(clientInfo, "se5\n");//pass con spazi
             passed = false;
             break;
           }
@@ -541,7 +557,7 @@ bool signIn(LpClientInfo clientInfo) {
   pthread_mutex_unlock( & mutexLogs);
   printf("Registrazione del client %s avvenuta con successo.", clientInfo -> clientAddressIPv4);
 
-  sendMsg(clientInfo, "$Server: Registrazione avvenuta con successo, ora puoi effettuare il login.");
+  sendMsg(clientInfo, "seok\n");//notifico la registrazione avvenuta con successo
   //clientInfo->status = CLTINF_REGISTERED;
 
   return false;
@@ -562,7 +578,7 @@ bool login(LpClientInfo clientInfo) {
   bool alreadyLogged;
 
   char logsBuffer[BUFFER_STRLEN];
-  sendMsg(clientInfo, "$Server: Inserisci lo stato");
+  sendMsg(clientInfo, "$Server: Inserisci lo stato \n");
     memset(incomingMsg, '\0', INCOMING_MSG_STRLEN);
 
     do {
@@ -572,6 +588,8 @@ bool login(LpClientInfo clientInfo) {
         return false;
       }
       incomingMsg[bytesReaded] = '\0';
+
+      //puts(incomingMsg);//TEST
 
       if (!strcmp(incomingMsg, "exit")) {
         return true;
@@ -596,10 +614,11 @@ bool login(LpClientInfo clientInfo) {
   memset(incomingMsg, '\0', INCOMING_MSG_STRLEN);
 
   do {
-    sendMsg(clientInfo, "$Server: Inserisci l'username.");
+    //sendMsg(clientInfo, "$Server: In attesa dell'username. \n");
     memset(incomingMsg, '\0', INCOMING_MSG_STRLEN);
 
     do {
+      sendMsg(clientInfo, "$Server: In attesa dell'username. \n");
       passed = true;
       /* Leggo l'username inserito dal client */
       if ((bytesReaded = read(clientInfo -> clientSocket, incomingMsg, INCOMING_MSG_STRLEN)) <= 0) {
@@ -607,16 +626,18 @@ bool login(LpClientInfo clientInfo) {
       }
       incomingMsg[bytesReaded] = '\0';
 
+      //puts(incomingMsg);//TEST
+
       if (!strcmp(incomingMsg, "exit")) {
         return true;
       } else {
         if (strlen(incomingMsg) > CLTINF_USERNAME_STRLEN) {
-          sendMsg(clientInfo, "$Server: Attenzione, username troppo lungo - [massimo 10 caratteri], riprovare.");
+          sendMsg(clientInfo, "se1\n");//errore username troppo lungo
           passed = false;
         } else {
           for (int i = 0; i < strlen(incomingMsg); i++) {
             if (incomingMsg[i] == ' ') {
-              sendMsg(clientInfo, "$Server: Attenzione, gli spazi non sono consentiti, riprovare.");
+              sendMsg(clientInfo, "se2\n");//errore spazi non sono consentiti
               passed = false;
               break;
             }
@@ -627,12 +648,15 @@ bool login(LpClientInfo clientInfo) {
         }
         memset(incomingMsg, '\0', INCOMING_MSG_STRLEN);
       }
-    } while (passed != true);
+    }while(passed != true);
 
-    sendMsg(clientInfo, "$Server: Inserisci la password. ");
-    memset(incomingMsg, '\0', INCOMING_MSG_STRLEN);
 
-    do {
+      //sendMsg(clientInfo, "$Server: In attesa della password. \n");
+      memset(incomingMsg, '\0', INCOMING_MSG_STRLEN);
+
+    do{
+      sendMsg(clientInfo, "$Server: In attesa della password. \n");
+      //puts("devo leggere la password");
       passed = true;
       /* Leggo la password inserita dal client */
       if ((bytesReaded = read(clientInfo -> clientSocket, incomingMsg, INCOMING_MSG_STRLEN)) <= 0) {
@@ -640,19 +664,21 @@ bool login(LpClientInfo clientInfo) {
       }
       incomingMsg[bytesReaded] = '\0';
 
+      //puts(incomingMsg);//TEST
+
       /* Verifico se l'utente ha inserito il comando di uscita */
       if (!strcmp(incomingMsg, "exit")) {
         return true;
       } else {
         /* Controllo se la password supera la lunghezza di 10 caratteri stabiliti  */
         if (strlen(incomingMsg) > CLTINF_PASSWORD_STRLEN) {
-          sendMsg(clientInfo, "$Server: Attenzione, password troppo lunga - [massimo 10 caratteri], riprovare.");
+          sendMsg(clientInfo, "se3\n");//errore lunghezza password
           passed = false;
         } else {
           /* Controllo che nella password non siano presenti caratteri di spazio */
           for (int i = 0; i < strlen(incomingMsg); i++) {
             if (incomingMsg[i] == ' ') {
-              sendMsg(clientInfo, "$Server: Attenzione, gli spazi non sono consentiti, riprovare.");
+              sendMsg(clientInfo, "se4\n");//errore password contenente spazi
               passed = false;
               break;
             }
@@ -686,7 +712,7 @@ bool login(LpClientInfo clientInfo) {
             LpClientInfo tmp = listClientInfo;
             while (tmp != NULL && alreadyLogged == false) {
               if ((tmp -> status == CLTINF_LOGGED) && !strcmp(tmp -> username, username) && tmp != clientInfo) {
-                sendMsg(clientInfo, "$Server: L'utente specificato è già connesso al Server.");
+                sendMsg(clientInfo, "selog\n");// errore di connessione al server
                 sleep(1);
                 alreadyLogged = true;
               }
@@ -704,7 +730,7 @@ bool login(LpClientInfo clientInfo) {
                 printf("Errore durante la scrittura nel file di logs.");
               }
               pthread_mutex_unlock( & mutexLogs);
-              sendMsg(clientInfo, "$Server: Login effettuato con successo.");
+              sendMsg(clientInfo, "seok\n");//login effettuato con successo
               sleep(1);
 
             }
@@ -720,7 +746,7 @@ bool login(LpClientInfo clientInfo) {
     pthread_mutex_unlock( & mutexDatabase);
 
     if (clientInfo -> status != CLTINF_LOGGED && alreadyLogged != true) {
-      sendMsg(clientInfo, "$Server: Username o password errati, riprovare.");
+      sendMsg(clientInfo, "seerror\n");//login fallito
       sleep(1);
     }
 
@@ -925,7 +951,7 @@ void checkInfections() {
 
   }
   pthread_mutex_unlock( & mutexLogs);
-  printf("controllo");
+  //printf("controllo");
   alarm(20); //ogni 20 secondi chiama la funzione checkInfections()
 
 }
@@ -937,25 +963,31 @@ bool requestNear(LpClientInfo clientInfo) {
 
   int positive = 0, negative = 0;
   char str[4];
+  char username[30] = "";
 
   current = listClientInfo;
   user = clientInfo;
 
   //invio un carattere di inizializzazione
-  sendMsg(clientInfo, "$");
+  sendMsg(clientInfo, "$\n");
 
   pthread_mutex_lock( & mutexClientInfo);
   while (current) {
 
     if (distance(user -> latitude, user -> longitude, current -> latitude, current -> longitude) < DISTANCE) {
       //ad ogni ciclo se un utente è vicino invio il suo username
-      sendMsg(clientInfo, current -> username);
+      //sendMsg(clientInfo, strcat(current->username,"\n")); //mando username con carattere \n
       if (current -> infected == true) {
         positive++;
-
+        strcpy(username,current->username);
+        sendMsg(clientInfo,strcat(username,"\n"));
+        sleep(1);
+        sendMsg(clientInfo, "infetto\n");
       } else {
         negative++;
-
+        strcpy(username,current->username);
+        sendMsg(clientInfo,strcat(username,"\n"));
+        sendMsg(clientInfo, "non infetto\n");
       }
 
     }
@@ -964,13 +996,16 @@ bool requestNear(LpClientInfo clientInfo) {
 
 
   //invio un carattere di fine trasmissione degli username
-  sendMsg(clientInfo, "!");
+  sendMsg(clientInfo, "!\n");
+  sleep(1);
   //invio il numero di positivi e negativi vicini all utente
   sprintf(str, "%d", positive);
-  sendMsg(clientInfo, str);
+  sendMsg(clientInfo, strcat(str,"\n"));
+  sleep(1);
   sprintf(str, "%d", negative);
-  sendMsg(clientInfo, str);
-  sendMsg(clientInfo, "x");
+  sendMsg(clientInfo, strcat(str,"\n"));
+  sleep(1);
+  sendMsg(clientInfo, "x\n");
   //sendMsg(clientInfo, current -> username);
 
   pthread_mutex_unlock( & mutexClientInfo);
@@ -988,30 +1023,30 @@ bool updateGpsInfo(LpClientInfo clientInfo) {
   memset(incomingMsg, '\0', INCOMING_MSG_STRLEN);
   passed = true;
 
-  sendMsg(clientInfo, "$Server: Inserisci latitudine");
+  sendMsg(clientInfo, "$Server: Inserisci latitudine \n");
   /* Leggo la latitudine dal client */
   if ((bytesReaded = read(clientInfo -> clientSocket, incomingMsg, INCOMING_MSG_STRLEN)) <= 0) {
     return false;
   }
   incomingMsg[bytesReaded] = '\0';
 
+
   pthread_mutex_lock( & mutexClientInfo);
   clientInfo -> latitude = atof(incomingMsg);
   pthread_mutex_unlock( & mutexClientInfo);
 
   //memset(incomingMsg, '\0', INCOMING_MSG_STRLEN);
-  sendMsg(clientInfo, "$Server: Inserisci longitudine");
+  sendMsg(clientInfo, "$Server: Inserisci longitudine \n");
   /* Leggo la longitudine dal client */
   if ((bytesReaded = read(clientInfo -> clientSocket, incomingMsg, INCOMING_MSG_STRLEN)) <= 0) {
     return false;
   }
   incomingMsg[bytesReaded] = '\0';
 
+
   pthread_mutex_lock( & mutexClientInfo);
   clientInfo -> longitude = atof(incomingMsg);
   pthread_mutex_unlock( & mutexClientInfo);
-
-  printf("%f %f", clientInfo -> latitude, clientInfo -> latitude);
 
   return true;
 
