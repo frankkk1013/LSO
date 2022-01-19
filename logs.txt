@@ -1,104 +1,30 @@
- totalInfections 0 - Wed Jan 19 15:13:00 2022
- totalInfections 0 - Wed Jan 19 15:13:20 2022
- totalInfections 0 - Wed Jan 19 15:13:40 2022
- totalInfections 0 - Wed Jan 19 15:14:00 2022
- > Nuova connessione accettata: [Client: 2.0.168.206] - Wed Jan 19 15:14:04 2022
- > Login effettuato con successo: [Client: 2.0.168.206 - Over] - Wed Jan 19 15:14:04 2022
- totalInfections 0 - Wed Jan 19 15:14:20 2022
- > Il client 2.0.168.206 si è disconnesso dal Server - Wed Jan 19 15:14:25 2022
- totalInfections 0 - Wed Jan 19 15:14:40 2022
- totalInfections 0 - Wed Jan 19 15:15:00 2022
- > Nuova connessione accettata: [Client: 2.0.168.212] - Wed Jan 19 15:15:03 2022
- > Login effettuato con successo: [Client: 2.0.168.212 - Over] - Wed Jan 19 15:15:03 2022
- totalInfections 0 - Wed Jan 19 15:15:20 2022
- totalInfections 0 - Wed Jan 19 15:15:40 2022
- totalInfections 0 - Wed Jan 19 15:16:00 2022
- totalInfections 0 - Wed Jan 19 15:16:20 2022
- > Nuova connessione accettata: [Client: 2.0.199.70] - Wed Jan 19 15:16:20 2022
- totalInfections 0 - Wed Jan 19 15:16:40 2022
- > Login effettuato con successo: [Client: 2.0.199.70 - Giaxo] - Wed Jan 19 15:16:20 2022
- totalInfections 0 - Wed Jan 19 15:17:00 2022
- totalInfections 1 - Wed Jan 19 15:17:20 2022
- totalInfections 1 - Wed Jan 19 15:17:40 2022
- totalInfections 1 - Wed Jan 19 15:18:00 2022
- totalInfections 1 - Wed Jan 19 15:18:20 2022
- > Il client 2.0.168.212 si è disconnesso dal Server - Wed Jan 19 15:18:23 2022
- > Il client 2.0.199.70 si è disconnesso dal Server - Wed Jan 19 15:18:32 2022
- totalInfections 1 - Wed Jan 19 15:18:40 2022
- totalInfections 1 - Wed Jan 19 15:19:00 2022
- > Nuova connessione accettata: [Client: 2.0.168.230] - Wed Jan 19 15:19:07 2022
- > Login effettuato con successo: [Client: 2.0.168.230 - Over] - Wed Jan 19 15:19:07 2022
- totalInfections 1 - Wed Jan 19 15:19:20 2022
- totalInfections 1 - Wed Jan 19 15:19:41 2022
- > Nuova connessione accettata: [Client: 2.0.199.91] - Wed Jan 19 15:19:45 2022
- totalInfections 1 - Wed Jan 19 15:20:01 2022
- > Login effettuato con successo: [Client: 2.0.199.91 - Giaxo] - Wed Jan 19 15:19:45 2022
- totalInfections 1 - Wed Jan 19 15:20:21 2022
- totalInfections 2 - Wed Jan 19 15:20:41 2022
- totalInfections 2 - Wed Jan 19 15:21:01 2022
- totalInfections 2 - Wed Jan 19 15:21:21 2022
- totalInfections 2 - Wed Jan 19 15:21:45 2022
- totalInfections 2 - Wed Jan 19 15:22:08 2022
- totalInfections 2 - Wed Jan 19 15:22:28 2022
- > Il client 2.0.168.230 si è disconnesso dal Server - Wed Jan 19 15:22:31 2022
- totalInfections 2 - Wed Jan 19 15:22:48 2022
- totalInfections 2 - Wed Jan 19 15:23:08 2022
- totalInfections 2 - Wed Jan 19 15:23:28 2022
- totalInfections 2 - Wed Jan 19 15:23:48 2022
- totalInfections 2 - Wed Jan 19 15:24:08 2022
- totalInfections 2 - Wed Jan 19 15:24:28 2022
- totalInfections 2 - Wed Jan 19 15:24:48 2022
- totalInfections 2 - Wed Jan 19 15:25:08 2022
- totalInfections 2 - Wed Jan 19 15:25:28 2022
- totalInfections 2 - Wed Jan 19 15:25:48 2022
- totalInfections 2 - Wed Jan 19 15:26:08 2022
- totalInfections 2 - Wed Jan 19 15:26:28 2022
- > Nuova connessione accettata: [Client: 2.0.169.0] - Wed Jan 19 15:26:44 2022
- totalInfections 2 - Wed Jan 19 15:26:48 2022
- > Il client 2.0.169.0 si è disconnesso dal Server - Wed Jan 19 15:26:57 2022
- > Nuova connessione accettata: [Client: 2.0.169.6] - Wed Jan 19 15:27:05 2022
- totalInfections 2 - Wed Jan 19 15:27:08 2022
- > Login effettuato con successo: [Client: 2.0.169.6 - Over] - Wed Jan 19 15:27:05 2022
- totalInfections 2 - Wed Jan 19 15:27:28 2022
- totalInfections 2 - Wed Jan 19 15:27:49 2022
- totalInfections 2 - Wed Jan 19 15:28:09 2022
- > Il client 2.0.169.6 si è disconnesso dal Server - Wed Jan 19 15:28:29 2022
- totalInfections 2 - Wed Jan 19 15:28:29 2022
- > Nuova connessione accettata: [Client: 2.0.169.22] - Wed Jan 19 15:28:35 2022
- > Login effettuato con successo: [Client: 2.0.169.22 - Over] - Wed Jan 19 15:28:35 2022
- totalInfections 2 - Wed Jan 19 15:28:49 2022
- totalInfections 2 - Wed Jan 19 15:29:09 2022
- totalInfections 2 - Wed Jan 19 15:29:29 2022
- totalInfections 2 - Wed Jan 19 15:29:49 2022
- totalInfections 2 - Wed Jan 19 15:30:09 2022
- totalInfections 2 - Wed Jan 19 15:30:29 2022
- totalInfections 2 - Wed Jan 19 15:30:49 2022
- totalInfections 2 - Wed Jan 19 15:31:09 2022
- > Il client 2.0.169.22 si è disconnesso dal Server - Wed Jan 19 15:31:13 2022
- > Nuova connessione accettata: [Client: 2.0.169.32] - Wed Jan 19 15:31:21 2022
- > Login effettuato con successo: [Client: 2.0.169.32 - Over] - Wed Jan 19 15:31:21 2022
- totalInfections 2 - Wed Jan 19 15:31:29 2022
- totalInfections 2 - Wed Jan 19 15:31:54 2022
- > Il client 2.0.169.32 si è disconnesso dal Server - Wed Jan 19 15:31:58 2022
- > Nuova connessione accettata: [Client: 2.0.169.44] - Wed Jan 19 15:32:04 2022
- > Login effettuato con successo: [Client: 2.0.169.44 - Over] - Wed Jan 19 15:32:04 2022
- totalInfections 2 - Wed Jan 19 15:32:14 2022
- > Il client 2.0.169.44 si è disconnesso dal Server - Wed Jan 19 15:32:21 2022
- totalInfections 2 - Wed Jan 19 15:32:34 2022
- > Nuova connessione accettata: [Client: 2.0.169.48] - Wed Jan 19 15:32:43 2022
- totalInfections 2 - Wed Jan 19 15:32:54 2022
- > Il client 2.0.169.48 si è disconnesso dal Server - Wed Jan 19 15:32:56 2022
- > Nuova connessione accettata: [Client: 2.0.169.52] - Wed Jan 19 15:33:05 2022
- > Login effettuato con successo: [Client: 2.0.169.52 - Over] - Wed Jan 19 15:33:05 2022
- totalInfections 2 - Wed Jan 19 15:33:14 2022
- > Il client 2.0.169.52 si è disconnesso dal Server - Wed Jan 19 15:33:21 2022
- totalInfections 2 - Wed Jan 19 15:33:34 2022
- totalInfections 2 - Wed Jan 19 15:33:54 2022
- totalInfections 2 - Wed Jan 19 15:34:14 2022
- totalInfections 2 - Wed Jan 19 15:34:34 2022
- totalInfections 2 - Wed Jan 19 15:34:54 2022
- totalInfections 2 - Wed Jan 19 15:35:14 2022
- totalInfections 2 - Wed Jan 19 15:35:34 2022
- > Nuova connessione accettata: [Client: 2.0.169.82] - Wed Jan 19 15:35:42 2022
- > Login effettuato con successo: [Client: 2.0.169.82 - Over] - Wed Jan 19 15:35:42 2022
- > Il client 2.0.169.82 si è disconnesso dal Server - Wed Jan 19 15:35:55 2022
+ > Nuova connessione accettata:[Client: 2.0.206.111] - Wed Jan 19 17:20:42 2022
+ totalInfections 0 - Wed Jan 19 17:20:47 2022
+ totalInfections 0 - Wed Jan 19 17:21:07 2022
+ totalInfections 0 - Wed Jan 19 17:21:27 2022
+ > Il client 2.0.206.111 si è disconnesso dal Server - Wed Jan 19 17:21:41 2022
+ totalInfections 0 - Wed Jan 19 17:21:47 2022
+ totalInfections 0 - Wed Jan 19 17:22:07 2022
+ totalInfections 0 - Wed Jan 19 17:22:27 2022
+ totalInfections 0 - Wed Jan 19 17:22:47 2022
+ totalInfections 0 - Wed Jan 19 17:23:07 2022
+ totalInfections 0 - Wed Jan 19 17:23:27 2022
+ totalInfections 0 - Wed Jan 19 17:23:47 2022
+ totalInfections 0 - Wed Jan 19 17:24:07 2022
+ totalInfections 0 - Wed Jan 19 17:24:27 2022
+ totalInfections 0 - Wed Jan 19 17:24:47 2022
+ totalInfections 0 - Wed Jan 19 17:25:07 2022
+ totalInfections 0 - Wed Jan 19 17:25:27 2022
+ totalInfections 0 - Wed Jan 19 17:25:47 2022
+ totalInfections 0 - Wed Jan 19 17:26:07 2022
+ totalInfections 0 - Wed Jan 19 17:26:27 2022
+ totalInfections 0 - Wed Jan 19 17:26:47 2022
+ totalInfections 0 - Wed Jan 19 17:27:07 2022
+ totalInfections 0 - Wed Jan 19 17:27:27 2022
+ totalInfections 0 - Wed Jan 19 17:27:47 2022
+ totalInfections 0 - Wed Jan 19 17:28:07 2022
+ totalInfections 0 - Wed Jan 19 17:28:27 2022
+ totalInfections 0 - Wed Jan 19 17:28:47 2022
+ totalInfections 0 - Wed Jan 19 17:29:07 2022
+ totalInfections 0 - Wed Jan 19 17:29:27 2022
+ totalInfections 0 - Wed Jan 19 17:29:47 2022
