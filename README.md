@@ -1,4 +1,4 @@
-# LSO
+# Operative Systems Lab - Final Project
 
 Multithread server in C for the following project
 
