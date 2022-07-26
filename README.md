@@ -3,9 +3,9 @@
 Multithread server in C for the following project
 
 # Topic
-.
 
-## Summary Description
+
+## Summary Description
 
 To realise a client-server system that allows clients to control the proximity of other clients by monitoring their location and status. The C language is used on a UNIX platform. Processes must communicate via TCP sockets. The implementation must be accompanied by adequate documentation.
 ## Detailed description
